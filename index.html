@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Yarn Bloom — Handmade Crochet</title>
+
+  <style>
+    /* 🌿 Basic Styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fffaf7;
+      color: #4b3d33;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* 🌸 Header */
+    header {
+      width: 100%;
+      background-color: #d6b28d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      letter-spacing: 1px;
+    }
+
+    /* 🌼 Search */
+    #search {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 20px;
+      outline: none;
+      width: 200px;
+      margin: 10px 0;
+    }
+
+    /* 💖 Wishlist */
+    .wishlist {
+      display: flex;
+      align-items: center;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    #wishlistCount {
+      background: white;
+      color: #d6b28d;
+      border-radius: 50%;
+      padding: 3px 8px;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+
+    /* 🧶 Items */
+    #itemsContainer {
+      width: 90%;
+      max-width: 1100px;
+      margin: 30px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .item {
+      background: white;
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-5px);
+    }
+
+    .item img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    .item h3 {
+      margin: 10px 0 5px;
+      font-size: 1.1em;
+    }
+
+    .item p {
+      font-size: 0.9em;
+      color: #6b5b4b;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 15px;
+      padding: 8px 12px;
+      cursor: pointer;
+      background-color: #d6b28d;
+      color: white;
+      font-size: 0.9em;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #c59d76;
+    }
+
+    footer {
+      margin-top: 30px;
+      padding: 10px;
+      font-size: 0.8em;
+      color: #6b5b4b;
+    }
+    /* 🌟 Product Detail Modal */
+.detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.detail-content {
+  background: white;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 90%;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.detail-content img {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+.detail-content img {
+  width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+.detail-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+
+#closeDetail {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #d6b28d;
+  border: none;
+  color: white;
+  font-size: 1.2em;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.similar-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.similar-container img {
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-section">
+      <img src="images/ChatGPT Image Oct 5, 2025, 09_25_36 PM.png" alt="The Yarn Bloom Logo" class="logo">
+      <h1>The Yarn Bloom</h1>
+    </div>
+    <input type="text" id="search" placeholder="Search crochet items...">
+    <div class="wishlist" id="wishlistBtn">
+      <span id="wishlistCount">0</span> ❤ Wishlist
+    </div>
+    
+  </header>
+
+  <main id="itemsContainer"></main>
+  <!-- 🌟 Product Detail Popup -->
+<div id="productDetail" class="detail-modal">
+  <div class="detail-content">
+    <button id="closeDetail">&times;</button>
+    <img id="detailImage" src="" alt="Product Image">
+    <h2 id="detailName"></h2>
+    <p id="detailPrice"></p>
+    <p id="detailColors"></p>
+    <p id="detailDesc"></p>
+    <h4>Similar Products:</h4>
+    <div id="similarProducts" class="similar-container"></div>
+  </div>
+</div>
+
+
+  <footer>
+    ©  The Yarn Bloom | Handmade Crochet with Love 🧶
+  </footer>
+
+  <script>
+    // 🌷 Product list with multiple designs per type
+    const products = [
+      {
+        type: "Keychain",
+        details: "Cute handmade crochet keychains.",
+        designs: [
+          { name: "Daisy keychain", img: "images/key chains/Crochet Handmade Daisy Flower Pendant for Handbag, Crochet Finished Products, Knitted Flower.jpeg", price: "₹59" },
+          { name: "bouquet keychain", img: "images/bags/IMG-20251003-WA0059.jpg", price: "₹69" },
+          { name: "bow + pearl", img: "images/key chains/Follow for more!.jpeg", price: "₹59" },
+          { name: "Watermelon slice ", img: "images/key chains/CROCHET PATTERN Watermelon, Amigurumi Tutorial PDF in English, Watermelon Keychain Crochet Pattern.jpeg", price: "₹49" },
+          { name: "tulip pearl keychain",img: "images/key chains/tulip keychain.jpeg",colors: "pink,yellow,blue,red,purple",price: "59"},
+          { name: "tulip",img: "images/key chains/llavero tulipán.jpeg",colors: "",price: ""},
+          { name: "swiss roll",img: "images/key chains/Cute Swiss roll keychain 🍥.jpeg",colors: "red,yellow,pink,purple",price: "49"},
+          { name: "breakfast mini keychain",img: "images/key chains/How to Crochet Breakfast Mini Keychains _ Free Pattern - Chubbiesbyash.jpeg",price: "49"},
+          { name: "cute bow ",img: "images/key chains/Crochet Bow Keychains🎀🧶.jpeg",colors: "red,pink,black,halfwhite",price: "39"},
+          { name: "bow",img: "images/key chains/Crochet bow keychain.jpeg",colors: "white,pink,red,black",price: "49"},
+          { name: "bow cherry keychain",img: "images/key chains/🧵🧶🪡.jpeg",colors: "pink ,white",price: "65"},
+          { name: "daisy keychain",img: "images/key chains/83f24ca7-29be-4233-97de-8577bee65876.jpeg",price: "39"},
+          { name: "strawberry keychain",img: "images/key chains/1524634d-4483-4108-8f79-9a40f32aaaaa.jpeg",price: "49"},
+          { name: "cute icecream",img: "images/key chains/Chaveiros Sorvetinho.jpeg",colors: "pink,white,half white,yellow",price: "49"}
+        ]
+      },
+      {
+        type: "Bags",
+        details: "Soft pastel aesthetic crochet bags.",
+        designs: [
+          { name: "3d rose bag", img: "images/bags/WhatsApp Image 2025-09-30 at 20.27.16_9a053e95.jpg", colors: "Pink, red,marhoon,white,black,mixed shades", price: "₹349",size:"19cm"},
+          { name: "daisy mobile bag", img: "images/bags/Top crochet patterns purse crocheting patterns….jpeg", price: "299"},
+          { name: "cute ruffle ", img:"images/bags/IMG-20251003-WA0061.jpg", colors: "pink,black", price: "399"},
+          { name: "pinteresty bow bag  ",img: "images/bags/IMG-20251003-WA0065.jpg",colors: "pink,black,white,",price: "499"},
+          { name: "aesthetic handbag",img: "images/bags/IMG-20251003-WA0060.jpg",colors: "",price: "599"},
+          { name: "tulip bag",img: "images/bags/IMG-20251003-WA0062.jpg",colors: "",price: "599"},
+          { name: "cute phone bag",img: "images/bags/phone bag 💐🌸.jpeg",colors: "white ,pink,black",price: "179"},
+          { name: "cute phone bag",img: "images/bags/c61ff935-353c-4b09-9b03-b7e70efa8588.jpeg",colors: "red,pink,black",price: "179"},
+          { name: "3d rose bag",img: "images/bags/#örgü çantalar.jpeg",colors:"red,black,white,pink",price: "499"}
+        ]
+      },
+      {
+        type: "pinteresty Hair accessories",
+        details: "Handmade cute and unique hair accessories.",
+        designs: [
+          { name: "3D Sprout hair clips", img:"images/hair clips/dc6f3aa6-2cd5-44d7-a67a-2a5c817d11bb.jpeg", price: "₹59" },
+          { name: "3d cute cat ear clips",img: "images/hair clips/CROCHET HAIRPIN _ Crochet Cat Ears Hair ClipTutorial _ Neko Hairclip _ Cute Crochet Hair Accessories.jpeg",colors: "pink-white,black-pink",price: "59"},
+          { name: "scrunchies",img: "images/hair clips/crochet aesthetic scrunchies✨.jpeg",colors: "pink,white,black",price: "49",quantity:"1"},
+          { name: "aesthetic scrunchies",img: "images/hair clips/cute crochet scrunchies🤍.jpeg",colors: "pink,white black",price: "39",quantity:"1"},
+          { name: "cute flower claw clip",img: "images/hair clips/Flower claw clip.jpeg",colors: "",price: "69"},
+          { name: "unique clips",img: "images/hair clips/şapka toka🌸.jpeg",colors: "",price: "59"},
+          { name: "aesthetic clips",img: "images/hair clips/white crochet frangipani hair clips.jpeg",colors: "",price: "49"},
+          { name: "hair band",img: "images/hair clips/afdb1412-f163-4d59-a0a7-f50323be3dee.jpeg",colors: "",price: "59"},
+          { name: "flower hair clips",img:"images/hair clips/3819a902-e271-4700-b8c4-09b9db07bf54.jpeg",colors:"pink,black,yellow,red",price:"49",quantity:"pair of one"},
+          { name: "hair lotus gajra",img: "images/hair clips/crochet gajra (1).jpeg",colors: "",price: "149"},
+          { name: "cute lotus hair accessories",img: "images/gajra/Handcrafted with love, these crochet gajras make….jpeg",colors: "",price: "68"},
+          { name: "aesthetic clips",img: "images/hair clips/Crochet tulip hair clip _ Flower hair barrette _ Cute floral hair pin _ Hair accessories _ Handmade hair clip _ Tulip clip _ PRICE FOR ONE.jpeg",price: "49"},
+          { name: "cute bow clips",img: "images/hair clips/Bow Crochet Hair Clip - Pink.jpeg",colors: "pink,black,white,red",price: "49",},
+          { name: "bow crchet hair clips",img: "images/hair clips/fiyonk toka, örgü fiyonk toka, nakış işleme, çıt çıt toka, örgütoka, crochet hair bows, hairbowclips.jpeg",colors: "white,pink,black",price: "99",}
+        ]
+      },
+      {
+        type:"home decor",
+        details : "soft pastel crochet home decor",
+        designs :[
+            { name : "wall hanging plants", img: "images/plants/Crochet Ideas - Crafts Ideas.jpeg",price :"229"},
+            { name: "wall hanging plant",img: "images/plants/crochet plant 🌷🌱.jpeg",colors: "",price: "199"},
+            { name: "flowers in pot",img: "images/plants/Crochet flower in pot, personalized gift for teacher, home decoration, pink tulip, desk decoration, tulip in pot, tulip bouquet, mother day.jpeg",colors: "",price: "249"},
+            { name: "cute flower with pot",img: "images/plants/AMIGURUMI_ Rose Crochet Pattern, Crochet Rose Pot, Rose Pattern, Flower Bouquet DIY Crochet Pattern, Flower Pattern, Rose Pot Pattern.jpeg",colors: "",price: "149"},
+            { name: "hanycraft ",img: "images/plants/b8beb85b-96af-4d86-8c8b-e3eb08f8746c.jpeg",colors: "",price: "69"},
+            { name: "handy craft",img: "images/plants/handycraft.jpeg",price: "49"},
+            { name: "bell fairy lights",img: "images/plants/62128bf6-f150-4fbd-aa08-b30eca96686e.jpeg",price: "149"}
+        ]
+      },
+      {
+        type: "book marks",
+        details:"",
+        designs :[
+            { name: "rose book marks",img: "images/book marks/Crochet Bookmarker.jpeg",colors: "red,pink,white",price: "49"},
+            { name: "aesthetic book marks",img: "images/book marks/knitted bookmarks book accessories watermelon sunflower rose.jpeg",price: "49"},
+            { name: "tulip book marks",img: "images/book marks/Cute bookmark_ Perfect gift for those who love to….jpeg",colors: "pink ,white,red,yellow,blue,purple",price: "49"},
+            { name: "book marks",img: "images/book marks/crochet book mark • Instagram.jpeg",price: "49"},
+            { name: "heart book marks",img: "images/book marks/Heart Bookmark.jpeg",colors: "red,black,pink,white,half white",price: "49"},
+      ]
+      },
+      {
+        type: "bouquet",
+        details: "best for gifts",
+        designs: [
+            { name: "rose bouquet",img: "images/bouquet/Crochet 🌹 🥀.jpeg",colors: "pink,red", price: "99",quantity:"1"},
+            { name: "mix bouquet", img: "images/bouquet/been ages since i last posted on here 🥹🎀….jpeg",price: "199"},
+            { name: "crochet flower bouquet", img: "images/bouquet/crochet flower bouquet_ sunflower, rose, lavender, tulip.jpeg",price: "249"},
+            { name: "heart petals bouquet", img: "images/bouquet/Cute Red Heart Petals Crochet Bouquet ♥️.jpeg",price: " 129",quantity:"1"},
+        ]
+      },
+      {
+        type:"accessories",
+        details : "desi girly vibe ",
+        designs :[
+            { name : "rose gajrey ", img: "images/gajra/Handmade Crochet Flower Gajra_ Customizable Floral Accessory.jpeg", colors:"red,pink",price :"99",quantity:"set of one " },
+            { name: "gajrey",img: "images/gajra/Crochet gajra.jpeg",price: "99"},
+            { name: "desi pineresty gajrey",img: "images/gajra/d71cba2d-97f6-4630-a7ba-a1d46032bb08.jpeg",price: "119"},
+            { name: "gajrey ",img: "images/gajra/7b34f2dd-5db7-4141-b0cf-aef81db8d183.jpeg",price: "179"},
+            { name: "crochet hoop earrings",img: "images/gajra/Beautiful Crochet Flower Vine Hoop Earrings.jpeg",price: "59"},
+            { name: "pinteresty hoop earring",img: "images/gajra/Boucles d'oreilles à volants au crochet Boucles d'oreilles au crochet Cerceaux de déclaration Cadeau de Noël unique pour elle.jpeg",colors: "pink,black,red",price: "59"},
+        ]
+      },
+    ];
+
+    const container = document.getElementById('itemsContainer');
+    const wishlistBtn = document.getElementById('wishlistBtn');
+    const wishlistCount = document.getElementById('wishlistCount');
+    let wishlist = [];
+
+    // 🧶 Display products with all designs
+    function displayProducts(filteredProducts = products) {
+      container.innerHTML = '';
+      filteredProducts.forEach(product => {
+        product.designs.forEach(design => {
+          const div = document.createElement('div');
+          div.classList.add('item');
+          div.innerHTML = `
+           <img src="${design.img}" alt="${design.name}" onclick="openDetail('${product.type}', '${design.name}')">
+            <h3>${product.type} - ${design.name}</h3>
+            <p>${product.details}</p>
+            <p><strong>${design.price}</strong></p>
+            <p><small>Colors: ${design.colors}</small></p>
+            <div class="buttons">
+              <button onclick="addToWishlist('${product.type} - ${design.name}')">♡ Wishlist</button>
+              <button onclick="contactWhatsApp('${product.type} - ${design.name}')">WhatsApp</button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    // 💬 WhatsApp contact
+    function contactWhatsApp(itemName) {
+      const phone = "+91 9165352292"; // replace with your WhatsApp number
+      const msg = `Hello! I saw *${itemName}* on The Yarn Bloom website. I'd love to know more about it!`;
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // 💖 Wishlist
+    function addToWishlist(name) {
+      if (!wishlist.includes(name)) {
+        wishlist.push(name);
+        wishlistCount.textContent = wishlist.length;
+        alert(`${name} added to your wishlist!`);
+      } else {
+        alert(`${name} is already in wishlist!`);
+      }
+    }
+    // 🌸 Open product detail modal
+function openDetail(type, designName) {
+  const product = products.find(p => p.type === type);
+  const design = product.designs.find(d => d.name === designName);
+
+  document.getElementById('detailImage').src = design.img;
+  document.getElementById('detailName').textContent = `${type} - ${design.name}`;
+  document.getElementById('detailPrice').textContent = `Price: ${design.price}`;
+  document.getElementById('detailColors').textContent = `Colors: ${design.colors || 'N/A'}`;
+  document.getElementById('detailDesc').textContent = product.details;
+
+  // show similar products (same type, excluding current one)
+  const similarContainer = document.getElementById('similarProducts');
+  similarContainer.innerHTML = '';
+  product.designs
+    .filter(d => d.name !== designName)
+    .forEach(sim => {
+      const img = document.createElement('img');
+      img.src = sim.img;
+      img.alt = sim.name;
+      img.onclick = () => openDetail(type, sim.name);
+      similarContainer.appendChild(img);
+    });
+
+  document.getElementById('productDetail').style.display = 'flex';
+}
+
+// ❌ Close product detail
+document.getElementById('closeDetail').addEventListener('click', () => {
+  document.getElementById('productDetail').style.display = 'none';
+});
+// 🌙 Close popup when clicking outside the box
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('productDetail');
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+
+
+    // 🔍 Search products
+    document.getElementById('search').addEventListener('input', e => {
+      const value = e.target.value.toLowerCase();
+      const filtered = products.filter(product =>
+        product.type.toLowerCase().includes(value) ||
+        product.details.toLowerCase().includes(value) ||
+        product.designs.some(design => design.name.toLowerCase().includes(value))
+      );
+      displayProducts(filtered);
+    });
+
+    // Initial display
+    displayProducts();
+  </script>
+</body>
+</html>
