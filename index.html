@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Yarn Bloom — Handmade Crochet</title>
+
+  <style>
+    /* 🌿 Basic Styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fffaf7;
+      color: #4b3d33;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* 🌸 Opening Loader Animation */
+#loader {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: #fffaf7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 9999;
+  transition: opacity 1s ease;
+}
+
+#loader img {
+  width: 120px;
+  animation: pop 1.5s ease infinite alternate;
+}
+
+#loader h2 {
+  margin-top: 10px;
+  color: #b8916e;
+  font-size: 1.5em;
+  letter-spacing: 2px;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  100% { transform: scale(1.05); opacity: 1; }
+}
+
+    /* 🌸 Header */
+    header {
+      width: 100%;
+      background-color: #d6b28d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      letter-spacing: 1px;
+    }
+
+    /* 🌼 Search */
+    #search {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 20px;
+      outline: none;
+      width: 200px;
+      margin: 10px 0;
+    }
+
+    /* 💖 Wishlist */
+    .wishlist {
+      display: flex;
+      align-items: center;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    #wishlistCount {
+      background: white;
+      color: #d6b28d;
+      border-radius: 50%;
+      padding: 3px 8px;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+
+    /* 🧶 Items */
+    #itemsContainer {
+      width: 90%;
+      max-width: 1100px;
+      margin: 30px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .item {
+      background: white;
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-5px);
+    }
+
+    .item img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    .item h3 {
+      margin: 10px 0 5px;
+      font-size: 1.1em;
+    }
+
+    .item p {
+      font-size: 0.9em;
+      color: #6b5b4b;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 15px;
+      padding: 8px 12px;
+      cursor: pointer;
+      background-color: #d6b28d;
+      color: white;
+      font-size: 0.9em;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #c59d76;
+    }
+
+    footer {
+      margin-top: 30px;
+      padding: 10px;
+      font-size: 0.8em;
+      color: #6b5b4b;
+    }
+    /* 🌟 Product Detail Modal */
+.detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.detail-content {
+  background: white;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 90%;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.detail-content img {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+.detail-content img {
+  width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+.detail-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+
+#closeDetail {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #d6b28d;
+  border: none;
+  color: white;
+  font-size: 1.2em;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.similar-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.similar-container img {
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+}
+/* 🌿 Buttons Styling */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.buttons button {
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 110px;
+}
+
+.buttons button:hover {
+  background-color: #d6f5e3;
+  transform: translateY(-2px);
+}
+
+.buttons button:nth-child(1) {
+  background-color: #ffe6e6;
+}
+.buttons button:nth-child(1):hover {
+  background-color: #ffcccc;
+}
+
+.buttons button:nth-child(2) {
+  background-color: #e6f7ff;
+}
+.buttons button:nth-child(2):hover {
+  background-color: #b3ecff;
+}
+
+.buttons button:nth-child(3) {
+  background-color: #e6ffe6;
+}
+.buttons button:nth-child(3):hover {
+  background-color: #ccffcc;
+}
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap; /* buttons wrap ho jaaye agar space kam ho */
+  gap: 10px;       /* button ke beech gap */
+}
+/* 🌿 Updated Buttons Styling */
+.buttons button {
+  border: none;
+  border-radius: 14px;
+  padding: 8px 14px;
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 90px;
+  max-width: 120px;
+  transition: all 0.3s ease;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+/* Individual button colors */
+.buttons button:nth-child(1) { /* Wishlist */
+  background-color: #ff6f61;   /* warm coral */
+}
+.buttons button:nth-child(1):hover {
+  background-color: #ff4c3b;
+  transform: translateY(-3px);
+}
+
+.buttons button:nth-child(2) { /* Add to Cart */
+  background-color: #4caf50;   /* fresh green */
+}
+.buttons button:nth-child(2):hover {
+  background-color: #3e8e41;
+  transform: translateY(-3px);
+}
+
+.buttons button:nth-child(3) { /* WhatsApp */
+  background-color: #25d366;   /* WhatsApp green */
+}
+.buttons button:nth-child(3):hover {
+  background-color: #1ebe57;
+  transform: translateY(-3px);
+}
+/* 🌟 Cart Quantity Controls Styling */
+.cart-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.cart-controls button {
+  background-color: #d6b28d; /* pastel brown */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s ease;
+}
+
+.cart-controls button:hover {
+  background-color: #c59d76;
+}
+
+.cart-controls span.qty {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1em;
+}
+
+  </style>
+</head>
+<body>
+<!-- 🌸 Loader (Opening Animation) -->
+<div id="loader">
+  <img src="images/ChatGPT-Logo.png" alt="The Yarn Bloom Logo">
+  <h2>The Yarn Bloom</h2>
+</div>
+
+  <header>
+    <div class="logo-section">
+      <img src="images/ChatGPT-Logo.png" alt="The Yarn Bloom Logo" class="logo">
+      <h1>The Yarn Bloom</h1>
+    </div>
+    <input type="text" id="search" placeholder="Search crochet items...">
+    <div class="wishlist" id="wishlistBtn">
+      <span id="wishlistCount">0</span> ❤ Wishlist
+    </div>
+    
+  </header>
+
+  <!-- 🛒 Cart Summary -->
+<div id="cartSummary" style="
+  position: fixed;
+  top: 90px;
+  right: 30px;
+  background: white;
+  padding: 12px 25px;
+  border-radius: 20px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  font-weight: 600;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 999;
+">
+  🛍️ <span id="cartQty">0</span> items |
+  💰 ₹<span id="cartAmount">0</span>
+</div>
+
+  <main id="itemsContainer"></main>
+  <!-- 🌟 Product Detail Popup -->
+<div id="productDetail" class="detail-modal">
+  <div class="detail-content">
+    <button id="closeDetail">&times;</button>
+    <img id="detailImage" src="" alt="Product Image">
+    <h2 id="detailName"></h2>
+    <p id="detailPrice"></p>
+    <p id="detailColors"></p>
+    <p id="detailDesc"></p>
+    <h4>Similar Products:</h4>
+    <div id="similarProducts" class="similar-container"></div>
+  </div>
+</div>
+<h4>Leave a Review:</h4>
+<form id="reviewForm">
+  <input type="text" id="customerName" placeholder="Your Name" required>
+  <select id="customerRating" required>
+    <option value="">Rating</option>
+    <option value="5">5 ★</option>
+    <option value="4">4 ★</option>
+    <option value="3">3 ★</option>
+    <option value="2">2 ★</option>
+    <option value="1">1 ★</option>
+  </select>
+  <textarea id="customerComment" placeholder="Your Review" required></textarea>
+  <button type="submit">Submit Review</button>
+</form>
+<div id="wishlistBox" style="
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  padding: 15px;
+  width: 250px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 14px;
+  display: none;
+  z-index: 999;
+"></div>
+
+<script>
+function toggleWishlist() {
+  const box = document.getElementById("wishlistBox");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+}
+</script>
+
+
+  <footer>
+    ©  The Yarn Bloom | Handmade Crochet with Love 🧶
+  </footer>
+
+  <script>
+// 🌸 Loader Hide after page load
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+  setTimeout(() => {
+    loader.style.opacity = "0";
+    loader.style.pointerEvents = "none";
+  }, 1000); // 1 sec animation
+});
+
+    // 🌷 Product list with multiple designs per type
+    const products = [
+       {
+        type:"accessories",
+        details : "desi girly vibe ",
+        designs :[
+            { name : "rose gajrey ", img: "images/gajra/gajra8.jpeg", colors:"red,pink",price :"199",quantity:"set of one " },
+            { name: "gajrey",img: "images/gajra/gajra4.jpeg",price: "149"},
+            { name: "desi pineresty gajrey",img: "images/gajra/gajra1.jpeg",price: "249"},
+            { name: "gajrey ",img: "images/gajra/gajra6.jpeg",price: "199"},
+            { name: "crochet hoop earrings",img: "images/gajra/gajra2.jpeg",price: "89"},
+            { name: "pinteresty hoop earring",img: "images/gajra/gajra3.jpeg",colors: "pink,black,red",price: "89"},
+        ]
+      },
+      {
+        type: "Key-chain",
+        details: "Cute handmade crochet keychains.",
+        designs: [
+          { name: "Daisy keychain", img: "images/key-chains/key-chains7.jpeg", price: "₹99" },
+          { name: "bouquet keychain", img: "images/key-chains/key-chains13.jpeg", price: "₹159" },
+          { name: "bow + pearl", img: "images/key-chains/key-chains10.jpeg", price: "₹149" },
+          { name: "Watermelon slice ", img: "images/key-chains/key-chains8.jpeg", price: "₹79" },
+          { name: "tulip pearl keychain",img: "images/key-chains/key-chains14.jpeg",colors: "pink,yellow,blue,red,purple",price: "149"},
+          { name: "tulip",img: "images/key-chains/key-chains12.jpeg",colors: "",price: "99"},
+          { name: "swiss roll",img: "images/key-chains/key-chains9.jpeg",colors: "red,yellow,pink,purple",price: "69"},
+          { name: "breakfast mini keychain",img: "images/key-chains/key-chains11.jpeg",price: "99"},
+          { name: "cute bow ",img: "images/key-chains/key-chains6.jpeg",colors: "red,pink,black,halfwhite",price: "79"},
+          { name: "bow",img: "images/key-chains/key-chains5.jpeg",colors: "white,pink,red,black",price: "99"},
+          { name: "bow cherry keychain",img: "images/key-chains/key-chains15.jpeg",colors: "pink ,white",price: "119"},
+          { name: "daisy keychain",img: "images/key-chains/key-chains1.jpeg",price: "79"},
+          { name: "strawberry keychain",img: "images/key-chains/key-chains3.jpeg",price: "79"},
+          { name: "cute icecream",img: "images/key-chains/key-chains4.jpeg",colors: "pink,white,half white,yellow",price: "89"}
+        ]
+      },
+      {
+        type: "Bags",
+        details: "Soft pastel aesthetic crochet bags.",
+        designs: [
+          { name: "3d rose sling bag", img: "images/bags/bag10.jpg", colors: "Pink, red,marhoon,white,black,mixed shades", price: "₹449",size:"19cm"},
+          { name: "daisy mobile bag", img: "images/bags/bag9.jpeg", price: "399"},
+          { name: "cute ruffle ", img:"images/bags/bag5.jpg", colors: "pink,black", price: "449"},
+          { name: "pinteresty bow bag  ",img: "images/bags/bag7.jpg",colors: "pink,black,white,",price: "499"},
+          { name: "aesthetic handbag",img: "images/bags/bag4.jpg",colors: "",price: "599"},
+          { name: "tulip bag",img: "images/bags/bag6.jpg",colors: "",price: "599"},
+          { name: "cute phone bag",img: "images/bags/bag2.jpeg",colors: "white ,pink,black",price: "249"},
+          { name: "cute phone bag",img: "images/bags/bag8.jpeg",colors: "red,pink,black",price: "199"},
+          { name: "3d rose bag",img: "images/bags/bag1.jpeg",colors:"red,black,white,pink",price: "549"}
+        ]
+      },
+      {
+        type: "pinteresty Hair accessories",
+        details: "Handmade cute and unique hair accessories.",
+        designs: [
+          { name: "3D Sprout hair-clips", img: "images/hair-clips/hair-clips11.jpeg", price: "₹59" },
+          { name: "3d cute cat ear clips",img: "images/hair-clips/hair-clips9.jpeg",colors: "pink-white,black-pink",price: "79"},
+          { name: "scrunchies",img: "images/hair-clips/hair-clips6.jpeg",colors: "pink,white,black",price: "99",quantity:"2"},
+          { name: "aesthetic scrunchies",img: "images/hair-clips/hair-clips16.jpeg",colors: "pink,white black",price: "49",quantity:"1"},
+          { name: "cute flower claw clip",img: "images/hair-clips/hair-clips13.jpeg",colors: "",price: "99"},
+          { name: "unique clips",img: "images/hair-clips/hair-clips1.jpeg",colors: "",price: "59"},
+          { name: "aesthetic clips",img: "images/hair-clips/hair-clips10.jpeg",colors: "",price: "49"},
+          { name: "hair band",img: "images/hair-clips/hair-clips3.jpeg",colors: "white-yellow,pink-yellow",price: "99"},
+          { name: "flower hair-clips",img: "images/hair-clips/hair-clips2.jpeg",colors:"pink,black,yellow,red",price:"69",quantity:"pair of one"},
+          { name: "hair lotus gajra",img: "images/hair-clips/hair-clips8.jpeg",colors: "",price: "199"},
+          { name: "cute hair accessories",img: "images/hair-clips/hair-clips15.jpeg",colors: "",price: "68"},
+          { name: "aesthetic clips",img: "images/hair-clips/hair-clips14.jpeg",price: "49"},
+          { name: "cute bow clips",img: "images/hair-clips/hair-clips5.jpeg",colors: "pink,black,white,red",price: "49",},
+          { name: "bow crochet hair-clips",img: "images/hair-clips/hair-clips12.jpeg",colors: "white,pink,black",price: "99",}
+        ]
+      },
+      {
+        type:"home decor",
+        details : "soft pastel crochet home decor",
+        designs :[
+            { name : "wall hanging plants", img: "images/plants/plants6.jpeg",price :"229"},
+            { name: "wall hanging plant",img: "images/plants/plants7.jpeg",colors: "",price: "199"},
+            { name: "flowers in pot",img: "images/plants/plants5.jpeg",colors: "",price: "249"},
+            { name: "cute flower with pot",img: "images/plants/plants3.jpeg",colors: "",price: "149"},
+            { name: "hanycraft ",img: "images/plants/plants4.jpeg",colors: "",price: "169"},
+            { name: "handy craft",img: "images/plants/plants8.jpeg",price: "89"},
+            { name: "bell fairy lights",img: "images/plants/plants1.jpeg",price: "149"}
+        ]
+      },
+      {
+        type: "book-marks",
+        details:"",
+        designs :[
+            { name: "rose book-marks",img: "images/book-marks/book-marks2.jpeg",colors: "red,pink,white",price: "49"},
+            { name: "aesthetic book-marks",img: "images/book-marks/book-marks5.jpeg",price: "49"},
+            { name: "tulip book-marks",img: "images/book-marks/book-marks3.jpeg",colors: "pink ,white,red,yellow,blue,purple",price: "49"},
+            { name: "book-marks",img: "images/book-marks/book-marks6.jpeg",price: "49"},
+            { name: "heart book-marks",img: "images/book-marks/book-marks4.jpeg",colors: "red,black,pink,white,half white",price: "49"},
+      ]
+      },
+      {
+        type: "bouquet",
+        details: "best for gifts",
+        designs: [
+            { name: "rose bouquet",img: "images/bouquet/bouquet3.jpeg",colors: "pink,red", price: "99",quantity:"1"},
+            { name: "mix bouquet", img: "images/bouquet/bouquet1.jpeg",price: "219"},
+            { name: "crochet flower bouquet", img: "images/bouquet/bouquet2.jpeg",price: "249"},
+            { name: "heart petals bouquet", img: "images/bouquet/bouquet4.jpeg",price: " 179",quantity:"1"},
+        ]
+      },
+     
+    ];
+let cart = [];
+let wishlist = [];
+let cartQty = 0;
+let cartAmount = 0;
+
+const container = document.getElementById('itemsContainer');
+const wishlistCount = document.getElementById('wishlistCount');
+
+// 🧶 Display products with all designs
+function displayProducts(filteredProducts = products) {
+  container.innerHTML = '';
+
+  filteredProducts.forEach(product => {
+    product.designs.forEach(design => {
+      const itemId = `${product.type.replace(/\s/g,'')}-${design.name.replace(/\s/g,'')}`;
+      const div = document.createElement('div');
+      div.classList.add('item');
+      div.innerHTML = `
+        <img src="${design.img}" alt="${design.name}" onclick="openDetail('${product.type}', '${design.name}')">
+        <h3>${product.type} - ${design.name}</h3>
+        <p>${product.details}</p>
+        <p><strong>${design.price}</strong></p>
+        <p><small>Colors: ${design.colors}</small></p>
+        <div class="buttons">
+          <button onclick="addToWishlist('${product.type} - ${design.name}')">♡ Wishlist</button>
+          <div class="cart-controls" id="cart-${itemId}" data-item-name="${product.type} - ${design.name}" data-price="${design.price}">
+            <button class="decrease">-</button>
+            <span class="qty" id="qty-${itemId}">0</span>
+            <button class="increase">+</button>
+          </div>
+          <button onclick="contactWhatsApp('${product.type} - ${design.name}')">WhatsApp</button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  });
+
+  attachCartButtons();
+}
+
+// 💬 WhatsApp contact
+function contactWhatsApp(itemName) {
+  const phone = "+91 9165352292"; 
+  const msg = `Hello! I saw *${itemName}* on The Yarn Bloom website. I'd love to know more about it!`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// 💖 Wishlist
+function addToWishlist(name) {
+  if (!wishlist.includes(name)) {
+    wishlist.push(name);
+    wishlistCount.textContent = wishlist.length;
+    alert(`${name} added to your wishlist!`);
+  } else {
+    alert(`${name} is already in wishlist!`);
+  }
+}
+
+// 🌸 Open product detail modal
+function openDetail(type, designName) {
+  const product = products.find(p => p.type === type);
+  const design = product.designs.find(d => d.name === designName);
+
+  document.getElementById('detailImage').src = design.img;
+  document.getElementById('detailName').textContent = `${type} - ${design.name}`;
+  document.getElementById('detailPrice').textContent = `Price: ${design.price}`;
+  document.getElementById('detailColors').textContent = `Colors: ${design.colors || 'N/A'}`;
+  document.getElementById('detailDesc').textContent = product.details;
+
+  const similarContainer = document.getElementById('similarProducts');
+  similarContainer.innerHTML = '';
+  product.designs
+    .filter(d => d.name !== designName)
+    .forEach(sim => {
+      const img = document.createElement('img');
+      img.src = sim.img;
+      img.alt = sim.name;
+      img.onclick = () => openDetail(type, sim.name);
+      similarContainer.appendChild(img);
+    });
+
+  document.getElementById('productDetail').style.display = 'flex';
+}
+
+// ❌ Close product detail
+document.getElementById('closeDetail').addEventListener('click', () => {
+  document.getElementById('productDetail').style.display = 'none';
+});
+
+// 🌙 Close popup when clicking outside the box
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('productDetail');
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+
+// 🔍 Search products
+document.getElementById('search').addEventListener('input', e => {
+  const value = e.target.value.toLowerCase();
+  const filtered = products.filter(product =>
+    product.type.toLowerCase().includes(value) ||
+    product.details.toLowerCase().includes(value) ||
+    product.designs.some(design => design.name.toLowerCase().includes(value))
+  );
+  displayProducts(filtered);
+});
+
+// 🛒 Cart functions
+function updateCart(itemName, price, change) {
+  price = parseInt(price.replace(/[^\d]/g,'')); 
+  let item = cart.find(i => i.name === itemName);
+
+  if (!item && change > 0) {
+    item = { name: itemName, price: price, quantity: 0 };
+    cart.push(item);
+  }
+
+  if (item) {
+    item.quantity += change;
+    if (item.quantity <= 0) {
+      cart = cart.filter(i => i.name !== itemName);
+      item.quantity = 0;
+    }
+  }
+
+  cartQty = cart.reduce((sum, i) => sum + i.quantity, 0);
+  cartAmount = cart.reduce((sum, i) => sum + i.quantity * i.price, 0);
+
+  if(document.getElementById("cartQty")) document.getElementById("cartQty").innerText = cartQty;
+  if(document.getElementById("cartAmount")) document.getElementById("cartAmount").innerText = cartAmount;
+
+  const span = document.getElementById(`qty-${itemName.replace(/\s/g,'')}`);
+  if(span) span.innerText = item ? item.quantity : 0;
+}
+
+function attachCartButtons() {
+  document.querySelectorAll('.cart-controls').forEach(control => {
+    const itemName = control.dataset.itemName;
+    const price = control.dataset.price;
+    control.querySelector('.increase').onclick = () => updateCart(itemName, price, +1);
+    control.querySelector('.decrease').onclick = () => updateCart(itemName, price, -1);
+  });
+}
+
+// Initial display
+displayProducts();
+  </script>
+</body>
+</html>
